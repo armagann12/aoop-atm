@@ -12,3 +12,10 @@ To start the program run:
 ```
 python main.py
 ```
+
+To register:
+
+```
+python register.py
+```
+
