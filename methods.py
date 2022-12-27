@@ -25,7 +25,7 @@ def authenticate_user(pin):
     if doc is None:
         status = False
     else:
-        status = True
+        status = doc
 
     return status
 

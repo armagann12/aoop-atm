@@ -3,18 +3,28 @@ from methods import *
 
 
 def auth():
-    print(pin_var.get())
     is_auth = authenticate_user(pin_var.get())
-    if is_auth == True:
-        pin_var.set("")
-        return window_transaction()
-    else:
+
+    if is_auth == False:
         pin_var.set("")
         root11 = tk.Toplevel(root)
         root11.geometry("50x50")
         label = tk.Label(root11, text='Wrong Pin', font=('calibre', 10, 'bold'))
         label.place(x=50, y=25, anchor="center")
         return is_auth
+    else:
+        dbname = get_database()
+        col = dbname["customer"]
+        doc = col.find_one({"card": is_auth["_id"]})
+
+        global doc2
+
+        col2 = dbname["account"]
+        doc2 = col2.find_one({"_id": doc["account"]})["accountNumber"]
+        print(doc2)
+
+        pin_var.set("")
+        return window_transaction()
 
 
 root = tk.Tk()
@@ -51,7 +61,7 @@ def deposit_btn_func(root0=None):
     root4.geometry("350x50")
 
     def deposit_btn():
-        is_deposit = Deposit(d_var.get(), 1).deposit()
+        is_deposit = Deposit(d_var.get(), doc2).deposit()
         if is_deposit:
             root12 = tk.Toplevel(root0)
             root12.geometry("50x50")
@@ -78,7 +88,7 @@ def withdraw_btn_func(root0=None):
     root3.geometry("350x50")
 
     def withdraw_btn():
-        is_withdraw = Withdraw(wd_var.get(), 1).withdraw()
+        is_withdraw = Withdraw(wd_var.get(), doc2).withdraw()
         if is_withdraw:
             root12 = tk.Toplevel(root0)
             root12.geometry("50x50")
@@ -111,7 +121,7 @@ def transfer_btn_func(root0=None):
     root2.geometry("400x75")
 
     def transfer_btn():
-        is_transferred= Transfer(amount_var.get(), 1, trans_var.get()).transfer()
+        is_transferred= Transfer(amount_var.get(), doc2, trans_var.get()).transfer()
         if is_transferred:
             root13 = tk.Toplevel(root0)
             root13.geometry("50x50")
@@ -146,7 +156,7 @@ def transfer_btn_func(root0=None):
 
 def balance_btn_func(root0=None):
     # 1 yerine otomatik
-    balance = BalanceInquiry(1).get_balance()
+    balance = BalanceInquiry(doc2).get_balance()
 
     root1 = tk.Toplevel(root0)
     root1.geometry("50x50")
