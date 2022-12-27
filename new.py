@@ -1,6 +1,8 @@
 from enum import Enum
 from pymongo import MongoClient
 from abc import ABC
+
+
 # Classes:
 
 
@@ -10,6 +12,23 @@ def get_database():
     client = MongoClient(CONNECTION_STRING)
 
     return client["atm"]
+
+
+def authenticate_user(pin):
+    # Param is the pin_number
+    # Returns bool (also return id of the card so we can search customer with that card)
+
+    dbname = get_database()
+    col = dbname["card"]
+    doc = col.find_one({"pin": pin})
+
+    if doc is None:
+        status = False
+    else:
+        status = True
+
+    print(status)
+    return status
 
 
 class TransactionType(Enum):
@@ -68,7 +87,6 @@ class Deposit():
         self.__amount = amount
         self.__account_number = account_number
 
-
     def deposit(self):
         dbname = get_database()
         collection = dbname["account"]
@@ -121,7 +139,6 @@ class Transfer():
         self.__destination_account_number = destination_account_number
         self.__account_number = account_number
 
-
     def transfer(self):
         dbname = get_database()
         collection = dbname["account"]
@@ -145,7 +162,8 @@ class Transfer():
                     print(trans_balance)
 
                     collection.update_one({"accountNumber": self.__account_number}, {"$set": {"totalBalance": balance}})
-                    collection.update_one({"accountNumber": self.__destination_account_number}, {"$set": {"totalBalance": trans_balance}})
+                    collection.update_one({"accountNumber": self.__destination_account_number},
+                                          {"$set": {"totalBalance": trans_balance}})
 
                     # Print Reciept
                     status = True
@@ -153,9 +171,7 @@ class Transfer():
         print(status)
         return status
 
-
-#BalanceInquiry(33336).get_balance()
-#Withdraw(3, 1).withdraw()
+# BalanceInquiry(33336).get_balance()
+# Withdraw(3, 1).withdraw()
 # Deposit(7, 1).deposit()
-#Transfer(7, 1, 33336).transfer()
-
+# Transfer(7, 1, 33336).transfer()
