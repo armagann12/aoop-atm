@@ -27,7 +27,6 @@ def authenticate_user(pin):
     else:
         status = True
 
-    print(status)
     return status
 
 
@@ -78,7 +77,6 @@ class BalanceInquiry():
         else:
             status = doc["totalBalance"]
 
-        print(status)
         return status
 
 
@@ -97,12 +95,10 @@ class Deposit():
         else:
             balance = doc["totalBalance"]
             balance += self.__amount
-            print(balance)
             collection.update_one({"accountNumber": self.__account_number}, {"$set": {"totalBalance": balance}})
             # Print Reciept
             status = True
 
-        print(status)
         return status
 
 
@@ -124,12 +120,10 @@ class Withdraw():
                 status = False
             else:
                 balance -= self.__amount
-                print(balance)
                 collection.update_one({"accountNumber": self.__account_number}, {"$set": {"totalBalance": balance}})
                 # Print Reciept
                 status = True
 
-        print(status)
         return status
 
 
@@ -158,8 +152,6 @@ class Transfer():
                     trans_balance = trans_doc["totalBalance"]
                     balance -= self.__amount
                     trans_balance += self.__amount
-                    print(balance)
-                    print(trans_balance)
 
                     collection.update_one({"accountNumber": self.__account_number}, {"$set": {"totalBalance": balance}})
                     collection.update_one({"accountNumber": self.__destination_account_number},
@@ -168,7 +160,6 @@ class Transfer():
                     # Print Reciept
                     status = True
 
-        print(status)
         return status
 
 # BalanceInquiry(33336).get_balance()
