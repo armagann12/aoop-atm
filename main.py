@@ -1,5 +1,5 @@
 import tkinter as tk
-from new import *
+from methods import *
 
 
 def auth():
